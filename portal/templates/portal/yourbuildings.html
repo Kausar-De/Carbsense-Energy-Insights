@@ -1,0 +1,40 @@
+{% extends 'portal/base.html' %}
+{% block content %}
+{% load static %}
+{% include 'portal/navbar.html' %}
+
+<br>
+
+<div class="row" style="margin-left: 5%; margin-right: 5%;">
+    <div class="col">
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; text-align: center;">
+            <h2 style="font-weight: 500;">Your Buildings</h2>
+        </div>
+        <br>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; text-align: center;">
+            <table class="table table-sm" style="vertical-align: middle;">
+                <tr>
+                    <th>Building Name</th>
+                    <th>Category</th>
+                    <th>Accommodation Type</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                {% for building in buildings %}
+                <tr>
+                    <td style="font-size: large; font-weight: bold; color: #002060;">{{building.name}}</td>
+                    <td style="color: #385723;">{{building.category}}</td>
+                    <td style="color: #385723;">{{building.acctype}}</td>
+                    <td><a class="shadow btn btn-success" style="border-radius: 20px; overflow: hidden; text-align: center; font-weight: 400; color: #ffffff;" href="{% url 'buildingprofile' building.id %}">Report</a></td>
+                    <td><a class="shadow btn btn-warning" style="border-radius: 20px; overflow: hidden; text-align: center; font-weight: 400; color: #ffffff;" href="{% url 'updatebuilding' building.id %}">Update</a></td>
+                    <td><a class="shadow btn btn-danger" style="border-radius: 20px; overflow: hidden; text-align: center; font-weight: 400; color: #ffffff;" href="{% url 'buildingprofile' building.id %}">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+<br>
+
+{% endblock %}

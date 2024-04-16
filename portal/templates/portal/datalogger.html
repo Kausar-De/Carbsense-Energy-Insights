@@ -1,0 +1,60 @@
+{% extends 'portal/base.html' %}
+{% block content %}
+{% load static %}
+{% include 'portal/navbar.html' %}
+{% load crispy_forms_tags %}
+
+<br>
+<div class="row" style="margin-left: 3.5%; margin-right: 3.5%;">
+    <div class="col">
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; text-align: center;">
+            <h2 style="font-weight: 500;">Add/Update Building Envelope</h2>
+        </div>
+        <br>
+        <form method="POST">
+            <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+                <h3>Building Details</h3>
+                {% csrf_token %}
+                {{formbldg|crispy}}
+            </div>
+            <br>
+            <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+                <h3>Building System Details</h3>
+                {% csrf_token %}
+                {{formsys|crispy}}
+            </div>
+            <br>
+            <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+                <h3>Wall Details</h3>
+				{{formwall|crispy}}
+            </div>
+            <br>
+            <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+                <h3>Roof Details</h3>
+                {{formroof|crispy}}
+            </div>
+            <br>
+            <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+                <h3>Floor Details</h3>
+                {{formfloor|crispy}}
+            </div>
+            <br>
+            <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+                <h3>Fenestration Details</h3>
+                {{formwindow|crispy}}
+            </div>
+            <br>
+            <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+                <h3>Structural Details</h3>
+                {{formstructural|crispy}}
+            </div>
+            <br>
+            <div class="text-center">
+                <input id="form-button" class="shadow btn btn-lg btn-success" style="padding-left: 75px; padding-right: 75px; border-radius: 20px; overflow: hidden; text-align: center; font-size: 30px; font-weight: 500;" type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+</div>
+<br>
+
+{% endblock %}

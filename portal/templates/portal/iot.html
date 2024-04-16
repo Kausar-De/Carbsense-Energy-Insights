@@ -1,0 +1,53 @@
+{% extends 'portal/base.html' %}
+{% block content %}
+{% load static %}
+{% include 'portal/navbar.html' %}
+
+<script>
+    let blynkApiUrl = 'https://blr1.blynk.cloud/external/api/getAll?token=UdY2G-__bRBBZABMgDhSYpDB-a6S91aC';
+
+    function fetchData() {
+    fetch(blynkApiUrl)
+        .then(response => response.json())
+        .then(data => {
+            // Assuming your placeholders have ids 'value1', 'value2', 'value3', 'value4'
+            document.getElementById('value1').textContent = data["v0"].toFixed(3);
+            document.getElementById('value2').textContent = data["v1"].toFixed(3);
+            document.getElementById('value3').textContent = data["v2"].toFixed(3);
+            document.getElementById('value4').textContent = data["v3"].toFixed(3);
+            document.getElementById('value5').textContent = data["v3"].toFixed(3) * 0.85;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Fetch data every second (1000 milliseconds)
+    setInterval(fetchData, 1000);
+</script>
+
+<br>
+<div class="row" style="margin-left: 0.5%; margin-right: 0.5%;">
+    <div class="col">
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;"> 
+            <h3 style="font-weight: 600; margin-bottom: 0; text-align: center;">IoT Readings</h3>
+            <hr>
+            <table style="text-align: center;">
+                <tr>
+                    <th class="col-2"><h3 style="color: #385723; font-weight: 500;">Current (A): </h3></th>
+                    <th class="col-2"><h3 style="color: #385723; font-weight: 500;">Voltage (V): </h3></th>
+                    <th class="col-2"><h3 style="color: #385723; font-weight: 500;">Power (kW): </h3></th>
+                    <th class="col-2"><h3 style="color: #385723; font-weight: 500;">Energy (kWh): </h3></th>  
+                    <th class="col-2"><h3 style="color: #385723; font-weight: 500;">Operational Carbon (kg-co<sub>2</sub>e): </h3></th>       
+                </tr>
+                <tr>
+                    <td class="col-2"><h3 id="value1"></h3></td>
+                    <td class="col-2"><h3 id="value2"></h3></td>
+                    <td class="col-2"><h3 id="value3"></h3></td>
+                    <td class="col-2"><h3 id="value4"></h3></td>
+                    <td class="col-2"><h3 id="value5"></h3></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

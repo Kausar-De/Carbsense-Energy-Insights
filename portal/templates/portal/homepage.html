@@ -1,0 +1,47 @@
+{% extends 'portal/base.html' %}
+{% block content %}
+{% load static %}
+{% include 'portal/navbar.html' %}
+
+<br>
+
+<div class="row" style="margin-left: 0.5%; margin-right: 0.5%;">
+    <div class="col">
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+            <img src="{% static '/images/homepagegraphic.png' %}" class="img-fluid" style="padding-top: 20px;">
+            <div class="card-img-overlay">
+                <h1 style="text-align: center; color: #002060; font-weight: 600;">CarbSense - Complete Building Energy & LCA Solution</h1>
+                <br>
+                <div class="text-center">
+                    <a class="shadow btn btn-lg btn-success" style="border-radius: 20px; overflow: hidden; text-align: center; font-weight: 400; color: #ffffff; font-size: 30px;" href="{% url 'datalogger' %}">Decarbonize Now!</a></td>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+            <h2 style="text-align: center; color: #002060;">Our Industry Partners</h2>
+            <div class="row" style="margin-left: 4.5%; margin-right: 4.5%; text-align: center;">
+                <div class="col" style="margin-top: 20px;">
+                    <img src="{% static '/images/lloydinsulations.png' %}">
+                    
+                </div>
+                <div class="col">
+                    <img src="{% static '/images/d2o.jpg' %}">
+                    
+                </div>
+            </div>
+            <br>
+            <div class="row" style="margin-left: 4.5%; margin-right: 4.5%; text-align: center;">
+                <div class="col">
+                    <h4>Lloyd Insulations</h4>
+                </div>
+                <div class="col">
+                    <h4>Design2Occupancy</h4>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'portal/base.html' %}
+{% block content %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+<br>
+<div class="row" style="margin-left: 5%; margin-right: 5%;">
+    <div class="col">
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; text-align: center;">
+            <h2 style="font-weight: 500;">Login</h2>
+        </div>
+        <br>
+        <form method="POST">
+            <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+                {% csrf_token %}
+                {{form|crispy}}
+                {% for message in messages %}        
+                    <h6 style="text-align: center; color: red;">{{message}}</h6>
+                {% endfor %}
+                <div class="text-center">
+                    <h5>Don't have an account? <a href="{% url 'register' %}">Register</a></h5>
+                </div>
+            </div>
+            <br>
+            <div class="text-center">
+                <input id="form-button" class="shadow btn btn-lg btn-success" style="padding-left: 75px; padding-right: 75px; border-radius: 20px; overflow: hidden; text-align: center; font-size: 30px; font-weight: 500;" type="submit" value="Submit">
+            </div>
+        </form>
+        <br>
+    </div>
+</div>
+
+{% endblock %}

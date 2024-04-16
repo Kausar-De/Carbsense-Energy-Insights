@@ -1,0 +1,197 @@
+{% extends 'portal/base.html' %}
+{% block content %}
+{% load static %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){
+        
+        Chart.defaults.font.size = 18;
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            responsive: false,
+            type: 'bar',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                datasets: [{
+                    label: 'Units Consumed/Month Last Year',
+                    data: [{% for i in lastyrunits%}'{{i}}', {% endfor %}],
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 292)',
+                    backgroundColor: 'rgb(75, 192, 292)',
+                },
+                {
+                    label: 'Units Consumed/Month 2 Years Prior',
+                    data: [{% for i in twoyrbfrunits%}'{{i}}', {% endfor %}],
+                    fill: false,
+                    borderColor: '#7CD1C0',
+                    backgroundColor: '#7CD1C0',
+                },
+                {
+                    label: 'Units Consumed/Month 3 Years Prior',
+                    data: [{% for i in threeyrbfrunits%}'{{i}}', {% endfor %}],
+                    fill: false,
+                    borderColor: 'rgb(92, 184, 92)',
+                    backgroundColor: 'rgb(92, 184, 92)',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true, 	
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    },
+                },
+            }
+        });
+        
+    });
+
+</script>
+
+<br>
+<div class="row" style="margin-left: 0.5%; margin-right: 0.5%;">
+    <div class="col">
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; text-align: center;">
+            <h2 style="font-weight: 500;">Building LCA Report - {{building.name}}</h2>
+        </div>
+        <br>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; margin-bottom: 5px;"> <!--Building Details-->
+            <div style="clear: both;">
+                <h4 style="color: #002060; font-weight: 600; margin-bottom: 0; float: left;">Building Details</h4>
+                <h4 style="font-weight: 600; margin-bottom: 0; float: right;">Built-up Area: {{building.area}} m<sup>2</sup></h4>
+            </div>
+        </div>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+            <h6><span style="color: #385723; font-weight: 500;">Address: &nbsp;</span><span>{{building.address}}</span></h6>
+            <table style="text-align: center;">
+                <tr>
+                    <th class="col-2"><h6 style="color: #385723; font-weight: 500;">Climate Zone: </h6></th>
+                    <th class="col-2"><h6 style="color: #385723; font-weight: 500;">Category: </h6></th>
+                    <th class="col-2"><h6 style="color: #385723; font-weight: 500;">Face Direction: </h6></th>
+                    <th class="col-2"><h6 style="color: #385723; font-weight: 500;">Accommodation: </h6></th>
+                    <th class="col-2"><h6 style="color: #385723; font-weight: 500;">Occupants: </h6></th>
+                    {% if building.yourfloor == 0 %}
+                        <th class="col-2"><h6 style="color: #385723; font-weight: 500;">No. of Floors: </h6></th>
+                    {% else %}
+                        <th class="col-2"><h6 style="color: #385723; font-weight: 500;">Floor: </h6></th>
+                    {% endif %}                    
+                </tr>
+                <tr>
+                    <td class="col-2"><h6>{{building.climatezone}}</h6></td>
+                    <td class="col-2"><h6>{{building.category}}</h6></td>
+                    <td class="col-2"><h6>{{building.face}}</h6></td>
+                    <td class="col-2"><h6>{{building.acctype}}</h6></td>
+                    <td class="col-2"><h6>{{building.occupants}}</h6></td>
+                    {% if building.yourfloor == 0 %}
+                        <td class="col-2"><h6>{{building.floorcount}}</h6></td>
+                    {% else %}
+                        <td class="col-2"><h6>{{building.yourfloor}} of {{building.floorcount}}</h6></td>
+                    {% endif %}                      
+                </tr>
+            </table>
+        </div>
+        <br>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; margin-bottom: 5px;"> <!--Energy Performance-->
+            <h4 style="color: #002060; font-weight: 600; margin-bottom: 0; float: left;">Energy Performance</h4> 
+        </div>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+            <h6>Energy Performance Index (EPI): <strong>{{buildingEPI}}</strong> kWh/Sq.m/Yr <mark style="background-color: #5bc0de ;">({{percEPI}}% efficiency vs. same category)</mark></h6>
+            <h6>Per Occupant Consumption (POC): <strong>{{buildingPOC}}</strong> <mark style="background-color: #5bc0de ;">({{percPOC}}% efficiency vs. same category)</mark></h6>
+            <hr style="margin-top: 0;">
+            <h6>Unit Consumption Trend (By Year):</h6>
+            <canvas id="myChart" width="400" height="100"></canvas>
+        </div>
+        <br>        
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; margin-bottom: 5px;"> <!--Building Systems-->
+            <h4 style="color: #002060; font-weight: 600; margin-bottom: 0; float: left;">Building System Details</h4> 
+        </div>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+            <div>
+                <h6><span style="color: #385723; font-weight: 500;">Primary HVAC System: &nbsp;</span><span>{{building.buildingsystems.hvacsystem}}</span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">HVAC System Star Rating: &nbsp;</span><span>{{building.buildingsystems.starrating}}</span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">Thermal Comfort Set Point (Celsius): &nbsp;</span><span>{{building.buildingsystems.setpoint}}</span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">Total Tonnage Rating (TR): &nbsp;</span><span>{{building.buildingsystems.setpoint}}</span></h6>                
+                {% if appliances %}
+                    <h6><span style="color: #385723; font-weight: 500;">Appliances: &nbsp;</span><span>{{appliances}}</span></h6>
+                {% else %}
+                    <h6><span style="color: #385723; font-weight: 500;">Appliances: &nbsp;</span><span>{{building.buildingsystems.appls}}</span></h6>
+                {% endif %}
+            </div>        
+        </div>
+        <br>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; margin-bottom: 5px;"> <!--Wall-->
+            <div style="clear: both;">
+                <h4 style="color: #002060; font-weight: 600; margin-bottom: 0; float: left;">Wall Details</h4>
+                <h4 style="color: #a71212; font-weight: 600; margin-bottom: 0; float: right; white-space: nowrap;">{{building.wallassembly.wallec|floatformat:2}} ({{wallecperunit|floatformat:2}}/m<sup>2</sup>) kg-CO<sub>2</sub> eqv.</h4>
+            </div>
+        </div>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+            <div>
+                <h6><span style="color: #385723; font-weight: 500;">Assembly: &nbsp;</span><span>{{building.wallassembly.wassembly}}</span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">Area: &nbsp;</span><span>{{building.wallassembly.wallarea}} m<sup>2</sup></span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">Insulation: &nbsp;</span><span>{{building.wallassembly.wallinsulation}}</span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">Tile: &nbsp;</span><span>{{building.wallassembly.walltile}}</span></h6>
+            </div>
+        </div>
+        <br>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; margin-bottom: 5px;"> <!--Roof-->      
+            <div style="clear: both;">
+                <h4 style="color: #002060; font-weight: 600; margin-bottom: 0; float: left;">Roof Details</h4>
+                <h4 style="color: #1cac12; font-weight: 600; margin-bottom: 0; float: right; white-space: nowrap;">{{building.roofassembly.roofec|floatformat:2}} ({{roofecperunit|floatformat:2}}/m<sup>2</sup>) kg-CO<sub>2</sub> eqv.</h4>
+            </div>
+        </div>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+            <div>
+                <h6><span style="color: #385723; font-weight: 500;">Assembly: &nbsp;</span><span>{{building.roofassembly.rassembly}}</span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">Area: &nbsp;</span><span>{{building.roofassembly.roofarea}} m<sup>2</sup></span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">Insulation: &nbsp;</span><span>{{building.roofassembly.roofinsulation}}</span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">Tile: &nbsp;</span><span>{{building.roofassembly.rooftile}}</span></h6>
+            </div>
+        </div>
+        <br>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; margin-bottom: 5px;"> <!--Floor-->
+            <div style="clear: both;">
+                <h4 style="color: #002060; font-weight: 600; margin-bottom: 0; float: left;">Floor Details</h4>
+                <h4 style="color: #a85f28; font-weight: 600; margin-bottom: 0; float: right; white-space: nowrap;">{{building.floorassembly.floorec|floatformat:2}} ({{floorecperunit|floatformat:2}}/m<sup>2</sup>) kg-CO<sub>2</sub> eqv.</h4>
+            </div>
+        </div>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+            <div>
+                <h6><span style="color: #385723; font-weight: 500;">Assembly: &nbsp;</span><span>{{building.floorassembly.fassembly}}</span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">Area: &nbsp;</span><span>{{building.floorassembly.floorarea}} m<sup>2</sup></span></h6>
+            </div>
+        </div>
+        <br>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; margin-bottom: 5px;"> <!--Window-->       
+            <div style="clear: both;">
+                <h4 style="color: #002060; font-weight: 600; margin-bottom: 0; float: left;">Window Details</h4>
+                <h4 style="color: #0bbed2; font-weight: 600; margin-bottom: 0; float: right; white-space: nowrap;">{{building.windowassembly.windowec|floatformat:2}} ({{windowecperunit|floatformat:2}}/m<sup>2</sup>) kg-CO<sub>2</sub> eqv.</h4>
+            </div>
+        </div>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+            <div>
+                <h6><span style="color: #385723; font-weight: 500;">Glass: &nbsp;</span><span>{{building.windowassembly.glass}}</span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">Area: &nbsp;</span><span>{{building.windowassembly.windowarea}} m<sup>2</sup></span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">Frame: &nbsp;</span><span>{{building.windowassembly.frame}}</span></h6>
+            </div>
+        </div>
+        <br>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden; margin-bottom: 5px;"> <!--Structural-->
+            <div style="clear: both;">
+                <h4 style="color: #002060; font-weight: 600; margin-bottom: 0; float: left;">Structural Details</h4>
+                <h4 style="color: #767c7d; font-weight: 600; margin-bottom: 0; float: right; white-space: nowrap;">{{building.structuralassembly.structuralec|floatformat:2}} ({{structuralecperunit|floatformat:2}}/m<sup>2</sup>) kg-CO<sub>2</sub> eqv.</h4>
+            </div>    
+        </div>
+        <div class="shadow card card-body" style="border-radius: 20px; overflow: hidden;">
+            <div>
+                <h6><span style="color: #385723; font-weight: 500;">Assembly: &nbsp;</span><span>{{building.structuralassembly.sassembly}}</span></h6>
+                <h6><span style="color: #385723; font-weight: 500;">Area: &nbsp;</span><span>{{building.structuralassembly.structuralarea}} m<sup>2</sup></span></h6>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+{% endblock %}
