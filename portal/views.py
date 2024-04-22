@@ -321,7 +321,6 @@ def buildingprofile(request, pk):
     context = {'building':building, 'appliances':appliances, 'lastyrunits':lastyrunits, 'twoyrbfrunits':twoyrbfrunits, 'threeyrbfrunits':threeyrbfrunits, 'wallecperunit':wallecperunit, 'roofecperunit':roofecperunit, 'floorecperunit':floorecperunit, 'windowecperunit':windowecperunit, 'structuralecperunit':structuralecperunit, 'buildingEPI': buildingEPI, 'buildingPOC':buildingPOC, 'percEPI': percEPI, 'percPOC': percPOC}
     return render(request, 'portal/buildingprofile.html', context)
 
-@login_required(login_url = 'login')
 def buildingPDF(request, pk):
     building = Building.objects.get(id = pk)
 
@@ -356,7 +355,6 @@ def buildingPDF(request, pk):
     context = {'building':building, 'appliances':appliances, 'lastyrunits':lastyrunits, 'twoyrbfrunits':twoyrbfrunits, 'threeyrbfrunits':threeyrbfrunits, 'wallecperunit':wallecperunit, 'roofecperunit':roofecperunit, 'floorecperunit':floorecperunit, 'windowecperunit':windowecperunit, 'structuralecperunit':structuralecperunit, 'buildingEPI': buildingEPI, 'buildingPOC':buildingPOC, 'percEPI': percEPI, 'percPOC': percPOC}
     return render(request, 'portal/buildingpdf.html', context)
 
-@login_required(login_url = 'login')
 def generatePDF(request, pk):
     building = Building.objects.only('name').get(id = pk)
 
